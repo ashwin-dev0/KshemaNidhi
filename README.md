@@ -1,49 +1,34 @@
-# KshemaNidhi UI
+# KshemaNidhi frontend
 
-Frontend-only React + TypeScript + Vite + Tailwind CSS application for managing a family fund, loans, monthly member contributions, repayments and interest.
+React, TypeScript, Vite, and Tailwind UI for the family fund. Python API repository: https://github.com/ashwin-dev0/KshemaNidhi-backend
 
-## Run
+## Local development
 
-```bash
-npm install
-npm run dev
+```powershell
+npm.cmd ci
+npm.cmd run dev
 ```
 
-## Production check
+Run the Python backend separately. Copy `.env.example` to `.env` and configure `API_PROXY_TARGET` for the backend address (default `http://127.0.0.1:8000`). Restart Vite after changing it. The browser always requests `/api`; Vite proxies these requests locally. Sign in using the account created or imported in the backend.
 
-```bash
-npm run build
-npm run preview
+## Build
+
+```powershell
+npm.cmd run build
 ```
 
-## Architecture
+## Vercel deployment
 
-The project is organized by feature instead of keeping business logic in `App.tsx`.
+Import this repository with the Vite preset, build command `npm run build`, and output directory `dist`. Deploy the backend separately first. Add a rewrite for `/api/:path*` to `https://YOUR-BACKEND-DOMAIN/api/:path*` before the existing SPA fallback in `vercel.json`, replacing the placeholder with the actual backend URL. `API_PROXY_TARGET` is only for local development/preview and does not configure production forwarding.
 
-- `src/app` — application router and root
-- `src/components/layout` — responsive shell/navigation
-- `src/components/ui` — reusable UI primitives
-- `src/features/dashboard` — dashboard UI and derived totals
-- `src/features/loans` — loan pages, components, calculations and service layer
-- `src/features/contributions` — monthly contributions feature
-- `src/features/members` — member management
-- `src/services/storage` — persistence adapter
-- `src/services/api` — placeholder for a future backend client
-- `src/store` — central application state
-- `src/config` — values such as annual rate and monthly contribution
-- `src/utils` — currency and date helpers
+Set the backend `ALLOWED_ORIGINS` to your actual frontend origin and `COOKIE_SECURE=true`. Keep API requests on the frontend domain via the rewrite so authentication cookies work. Never put database credentials into this repository or any VITE_ environment variable. The database is managed only by the backend.
 
-## Responsive behavior
+## Features
 
-- Mobile: stacked cards, mobile card versions of wide tables, fixed bottom navigation.
-- Tablet/mid-size: two-column summary grids and full-width feature pages.
-- Desktop: sticky left sidebar and multi-column feature layouts.
-- Large desktop: capped content width (`1500px`) inside an `1800px` application shell so content does not stretch excessively.
+- Login and logout, including mobile bottom navigation.
+- Outstanding/completed loans and repayment tracking.
+- Monthly contributions and confirmation dialogs.
+- Active/inactive members with retained history.
+- Dashboard balances and interest breakdown.
 
-## Backend migration later
-
-UI components do not write directly to localStorage. State changes go through feature services and the storage adapter. A backend can later replace the persistence layer while keeping page/component APIs stable.
-
-## Existing browser data
-
-The storage adapter attempts to load older `family-loan-fund-v1` and `family-loan-fund-v2` data if the new `kshemanidhi-fund-v3` key is not present.
+All records are loaded from the backend API. Browser storage is not the source of truth.

@@ -1,5 +1,6 @@
-import { Banknote, LayoutDashboard, Users, WalletCards } from 'lucide-react'
+import { Banknote, LayoutDashboard, LogOut, Users, WalletCards } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import { Button } from '../ui/Button'
 
 const nav = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -8,11 +9,11 @@ const nav = [
   { to: '/members', label: 'Members', icon: Users },
 ]
 
-export function Sidebar() {
+export function Sidebar({ onSignOut, signingOut, disabled }: { onSignOut: () => void; signingOut: boolean; disabled: boolean }) {
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
       <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-6">
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-600 text-white"><WalletCards size={20}/></div>
+        <img src="/kn-icon.svg" alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-xl" />
         <div><div className="font-extrabold tracking-tight text-slate-950">KshemaNidhi</div><div className="text-xs text-slate-500">Family fund manager</div></div>
       </div>
       <nav className="flex-1 space-y-1 p-4">
@@ -22,7 +23,7 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="p-5 text-xs leading-5 text-slate-400">Frontend-only prototype. Data stays in this browser.</div>
+      <div className="border-t border-slate-100 p-4"><Button variant="ghost" className="w-full justify-start" disabled={disabled} onClick={onSignOut}><LogOut size={18} />{signingOut ? 'Signing out...' : 'Logout'}</Button></div>
     </aside>
   )
 }

@@ -3,14 +3,12 @@ import type { Member } from '../features/members/types/member.types'
 import type { Contribution } from '../features/contributions/types/contribution.types'
 
 export type FundState = {
-  openingFund: number
   loans: Loan[]
   members: Member[]
   contributions: Contribution[]
 }
 
 export type FundTransactionType =
-  | 'OPENING_BALANCE'
   | 'CONTRIBUTION'
   | 'LOAN_DISBURSEMENT'
   | 'PRINCIPAL_REPAYMENT'

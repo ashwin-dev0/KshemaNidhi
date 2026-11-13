@@ -2,11 +2,10 @@ import { FUND_CONFIG } from '../../config/fund.config'
 import type { FundState } from '../../types/fund.types'
 import type { StorageAdapter } from './storage'
 
-const emptyState: FundState = { openingFund: 0, loans: [], members: [], contributions: [] }
+const emptyState: FundState = { loans: [], members: [], contributions: [] }
 
 function normalize(value: Partial<FundState> | null | undefined): FundState {
   return {
-    openingFund: Number(value?.openingFund || 0),
     loans: value?.loans || [],
     members: value?.members || [],
     contributions: value?.contributions || [],

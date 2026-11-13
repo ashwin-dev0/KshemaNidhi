@@ -1,3 +1,4 @@
+import { useDialog } from '../../../components/ui/DialogProvider'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Plus } from 'lucide-react'
@@ -19,8 +20,9 @@ export function LoanForm({
 }: {
   members: Member[]
   availableFund: number
-  onCreate: (loan: Loan) => void
+  onCreate: (loan: Loan) => Promise<boolean>
 }) {
+  const { confirm, alert } = useDialog()
   const [form, setForm] = useState({
     memberId: '',
     date: today,
@@ -33,7 +35,7 @@ export function LoanForm({
     (member) => member.id === form.memberId
   )
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault()
 
     const principal = Number(form.principal)
@@ -46,24 +48,18 @@ export function LoanForm({
       installments <= 0 ||
       !Number.isInteger(installments)
     ) {
-      window.alert(
-        'Select a borrower and enter a valid date, principal amount and whole number of installments.'
-      )
+      await alert({ title: 'Check loan details', description: 'Select a borrower and enter a valid date, principal amount and whole number of installments.' })
       return
     }
 
     if (
       principal > availableFund &&
-      !window.confirm(
-        `This loan is ${money(
-          principal - availableFund
-        )} more than the currently available fund. Add it anyway?`
-      )
+      !(await confirm({ title: 'Loan exceeds available fund', description: `This loan is ${money(principal - availableFund)} more than the currently available fund. Would you like to add it anyway?`, confirmLabel: 'Add loan anyway' }))
     ) {
       return
     }
 
-    onCreate({
+    const saved = await onCreate({
       id: crypto.randomUUID(),
 
       // Always link loan to an existing member
@@ -88,6 +84,8 @@ export function LoanForm({
 
       createdAt: new Date().toISOString(),
     })
+
+    if (!saved) return
 
     setForm({
       memberId: '',

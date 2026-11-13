@@ -3,7 +3,6 @@ import { expectedInterestForLoan, interestReceivedForLoan } from '../../loans/ca
 
 export function buildFundTransactions(state: FundState): FundTransaction[] {
   const transactions: FundTransaction[] = []
-  if (state.openingFund) transactions.push({ id: 'opening-balance', type: 'OPENING_BALANCE', amount: state.openingFund, date: '0000-00-00', description: 'Opening fund balance' })
 
   state.loans.forEach((loan) => {
     transactions.push({ id: `loan-${loan.id}`, type: 'LOAN_DISBURSEMENT', amount: -loan.principal, date: loan.date, memberId: loan.memberId, loanId: loan.id, description: `Loan disbursed to ${loan.name}` })
